@@ -8,7 +8,7 @@
 
 ### High Priority
 <!-- Critical bugs and important features -->
-- Fix login bug when user uses special characters #bug #authentication
+- add the missing components: heimdall, jellyfin, prowlarr, sabnzbd
 - Make domain names configurable in a clever way #kubernetes #configuration #enhancement
 
 ### Medium Priority
@@ -19,6 +19,8 @@
 
 ### Low Priority
 <!-- Nice-to-haves and maintenance tasks -->
+- Fix login bug when user uses special characters #bug #authentication
+
 
 ## In Progress
 <!-- Tasks currently being worked on -->
