@@ -1,0 +1,163 @@
+# Secrets and sensitive files
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.truststore
+.env
+.env.*
+!.env.example
+secrets.yml
+secrets.yaml
+config/secrets.yml
+config/secrets.yaml
+
+# Database credentials and connection strings
+config/database.yml
+config/database.yaml
+.pgpass
+*.sqlite
+*.sqlite3
+*.db
+
+# Configuration files with secrets
+config.yml
+config.yaml
+!config.example.yml
+!config.example.yaml
+invidious.yml
+invidious.yaml
+
+# API keys and tokens
+api_keys.txt
+tokens.txt
+.api_key
+.token
+
+# Logs that might contain sensitive information
+*.log
+logs/
+log/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+tmp/
+
+# Docker secrets
+docker-compose.override.yml
+docker-compose.production.yml
+docker-compose.secrets.yml
+
+# Operating System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# IDE and editor files
+.vscode/settings.json
+.vscode/launch.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Node.js (if applicable)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python (if applicable)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+env/
+
+# Ruby (if applicable)
+.bundle/
+vendor/bundle/
+
+# Crystal (Invidious specific)
+lib/
+.shards/
+.crystal/
+
+# Docker
+.dockerignore
+
+# Backup files
+*.bak
+*.backup
+*.orig
+
+# SSL certificates
+ssl/
+certificates/
+certs/
+
+# SSH keys
+.ssh/
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+# GPG keys
+*.gpg
+*.asc
+
+# Application specific secrets
+hmac_key.txt
+session_secret.txt
+encryption_key.txt
+
+# PostgreSQL
+*.sql.gz
+*.dump
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Build artifacts
+build/
+dist/
+target/
+bin/
+obj/
+
+# Dependency directories
+deps/
+_build/
+
+# Package files
+*.deb
+*.rpm
+*.tar.gz
+*.zip
+*.7z
+
+# Local development overrides
+docker-compose.local.yml
+config.local.yml
+.local
+
+# ytplaylistarr - handling later, not in initial commit
+ytplaylistarr/

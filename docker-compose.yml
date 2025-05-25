@@ -1,0 +1,211 @@
+  version: "3.2"
+
+  services:
+    # lidarr:
+    #   container_name: lidarr
+    #   image: hotio/lidarr
+    #   restart: unless-stopped
+    #   logging:
+    #     driver: json-file
+    #   ports:
+    #     - 8686:8686
+    #   environment:
+    #     - PUID=1000
+    #     - PGID=1000
+    #     - UMASK=002
+    #     - TZ=Europe/Amsterdam
+    #   volumes:
+    #     - /etc/localtime:/etc/localtime:ro
+    #     - /docker/appdata/lidarr:/config
+    #     - /data/usenet/downloads:/data/usenet/downloads
+    #     - /media/nucy/media:/data/usenet/media
+
+    radarr:
+      container_name: radarr
+      image: ghcr.io/hotio/radarr:latest
+      restart: unless-stopped
+      logging:
+        driver: json-file
+      ports:
+        - 7878:7878
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - UMASK=002
+        - TZ=Europe/Amsterdam
+      volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - /docker/appdata/radarr:/config
+        - /data/usenet/downloads:/data/usenet/downloads
+        - /media/nucy/media:/data/usenet/media
+
+    sonarr:
+      container_name: sonarr
+      image: ghcr.io/hotio/sonarr:latest
+      restart: unless-stopped
+      logging:
+        driver: json-file
+      ports:
+        - 8989:8989
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - UMASK=002
+        - TZ=Europe/Amsterdam
+      volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - /docker/appdata/sonarr:/config
+        - /data/usenet/downloads:/data/usenet/downloads
+        - /media/nucy/media:/data/usenet/media
+
+    bazarr:
+      container_name: bazarr
+      image: ghcr.io/hotio/bazarr:latest
+      restart: unless-stopped
+      logging:
+        driver: json-file
+      ports:
+        - 6767:6767
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - UMASK=002
+        - TZ=Europe/Amsterdam
+      volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - /docker/appdata/bazarr:/config
+        - /data/usenet/downloads:/data/usenet/downloads
+        - /media/nucy/media:/data/usenet/media
+
+    sabnzbd:
+      container_name: sabnzbd
+      image: ghcr.io/hotio/sabnzbd:latest
+      deploy:
+        resources:
+          limits:
+            cpus: '0.70' # dave was here
+            memory: 3G
+              #          reservations:
+              #            cpus: '0.20' # here too
+              #            memory: 2G
+      restart: unless-stopped
+      logging:
+        driver: json-file
+      ports:
+        - 8080:8080
+        - 9090:9090
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Europe/Amsterdam
+      volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - /docker/appdata/sabnzbd:/config
+        - /data/usenet/downloads:/data/usenet/downloads
+        - /media/nucy/media:/data/usenet/media
+
+    prowlarr:
+      container_name: prowlarr
+      image: ghcr.io/hotio/prowlarr
+      restart: unless-stopped
+      ports:
+        - "9696:9696"
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - UMASK=002
+        - TZ=Europe/Amsterdam
+      volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - /docker/appdata/prowlarr:/config
+        - /data/usenet/downloads:/data/usenet/downloads
+
+    samba:
+      container_name: samba
+      image: dperson/samba
+      restart: unless-stopped
+      network_mode: host
+        #      ports:
+        #        - 137:137/udp
+        #        - 138:138/udp
+        #        - 139:139
+        #        - 445:445
+      volumes:
+        - /media/nucy/media:/mount
+        - /home/nucy:/homeMount
+      command: '-s "nucy-home;/homeMount" -s "data-usenet;/mount;yes;no;yes;kodi;none" -u "kodi;kodiPassword"'
+
+    heimdall:
+      image: lscr.io/linuxserver/heimdall:latest
+      container_name: heimdall
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Europe/Amsterdam
+      volumes:
+        - /docker/appdata/heimdall/:/config
+      ports:
+        - 80:80
+        - 443:443
+      restart: unless-stopped
+
+    jellyfin:
+      container_name: jellyfin
+      image: ghcr.io/hotio/jellyfin
+      restart: unless-stopped
+      group_add:
+        - "107"
+        - "44"
+      logging:
+        driver: json-file
+      devices:
+        - /dev/dri:/dev/dri
+      ports:
+        - 8097:8096
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Europe/Amsterdam
+      volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - /docker/appdata/jellyfin/config:/config
+        - /docker/appdata/jellyfin/cache:/cache
+        - /media/nucy/media:/data/usenet/media
+
+          #    jellyseerr:
+          #      image: fallenbagel/jellyseerr:latest
+          #      container_name: jellyseerr
+          #      restart: unless-stopped
+          #      environment:
+          #        - PUID=1000
+          #        - PGID=1000
+          #        - LOG_LEVEL=debug
+          #        - TZ=Europe/Amsterdam
+          #      ports:
+          #        - 5055:5055
+          #      logging:
+          #        driver: json-file
+          #      volumes:
+          #        - /etc/localtime:/etc/localtime:ro
+          #        - /docker/appdata/jellyseerr/config:/app/config
+
+          #    ytplaylistarr:
+          #      container_name: ytplaylistarr
+          #      build: ./ytplaylistarr # Build the Dockerfile in the current directory
+          #      restart: unless-stopped
+          #      logging:
+          #        driver: json-file
+          #      environment:
+          #        - SLEEP_AMOUNT=600 # Example: check every ten minutes
+          #        - PUID=1000
+          #        - PGID=1000
+          #        - TZ=Europe/Amsterdam
+          #      volumes:
+          #        - ./ytplaylistarr/playlists.txt:/playlists.txt
+          #        - /etc/localtime:/etc/localtime:ro
+          #        - /media/nucy/media/musicvideos:/downloads
+          #
+          #
+
+  volumes:
+    postgresdata:

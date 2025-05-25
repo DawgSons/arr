@@ -2,18 +2,18 @@
 
 ## Inbox
 <!-- Add new ideas and todos anywhere in this section -->
-- Add dark mode to the dashboard
-- Fix login bug when user uses special characters
-- Improve loading performance on product page
 
 ## Organized Tasks
 <!-- Copilot will maintain this section -->
 
 ### High Priority
 <!-- Critical bugs and important features -->
+- Fix login bug when user uses special characters #bug #authentication
 
 ### Medium Priority
 <!-- Enhancements and improvements -->
+- Add dark mode to the dashboard #feature #ui #enhancement
+- Improve loading performance on product page #performance #optimization
 
 ### Low Priority
 <!-- Nice-to-haves and maintenance tasks -->
