@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+  namespace: media-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarr
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      containers:
+      - name: sonarr
+        image: ghcr.io/hotio/sonarr:latest
+        ports:
+        - containerPort: 8989
+        env:
+        - name: PUID
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: PUID
+        - name: PGID
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: PGID
+        - name: UMASK
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: UMASK
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: TZ
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          subPath: sonarr
+        - name: downloads
+          mountPath: /data/usenet/downloads
+        - name: media
+          mountPath: /data/usenet/media
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      - name: downloads
+        persistentVolumeClaim:
+          claimName: usenet-downloads-pvc
+      - name: media
+        persistentVolumeClaim:
+          claimName: media-storage-pvc
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarr
+  namespace: media-server
+spec:
+  selector:
+    app: sonarr
+  ports:
+  - protocol: TCP
+    port: 8989
+    targetPort: 8989
+  type: ClusterIP

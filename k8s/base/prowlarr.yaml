@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr
+  namespace: media-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prowlarr
+  template:
+    metadata:
+      labels:
+        app: prowlarr
+    spec:
+      containers:
+      - name: prowlarr
+        image: ghcr.io/hotio/prowlarr:latest
+        ports:
+        - containerPort: 9696
+        env:
+        - name: PUID
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: PUID
+        - name: PGID
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: PGID
+        - name: UMASK
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: UMASK
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: TZ
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          subPath: prowlarr
+        - name: downloads
+          mountPath: /data/usenet/downloads
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      - name: downloads
+        persistentVolumeClaim:
+          claimName: usenet-downloads-pvc
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prowlarr
+  namespace: media-server
+spec:
+  selector:
+    app: prowlarr
+  ports:
+  - protocol: TCP
+    port: 9696
+    targetPort: 9696
+  type: ClusterIP

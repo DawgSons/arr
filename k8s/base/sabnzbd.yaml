@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sabnzbd
+  namespace: media-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sabnzbd
+  template:
+    metadata:
+      labels:
+        app: sabnzbd
+    spec:
+      containers:
+      - name: sabnzbd
+        image: ghcr.io/hotio/sabnzbd:latest
+        ports:
+        - containerPort: 8080
+        - containerPort: 9090
+        env:
+        - name: PUID
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: PUID
+        - name: PGID
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: PGID
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: TZ
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          subPath: sabnzbd
+        - name: downloads
+          mountPath: /data/usenet/downloads
+        - name: media
+          mountPath: /data/usenet/media
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "200m"
+          limits:
+            memory: "3Gi"
+            cpu: "700m"
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      - name: downloads
+        persistentVolumeClaim:
+          claimName: usenet-downloads-pvc
+      - name: media
+        persistentVolumeClaim:
+          claimName: media-storage-pvc
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sabnzbd
+  namespace: media-server
+spec:
+  selector:
+    app: sabnzbd
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    name: web
+  - protocol: TCP
+    port: 9090
+    targetPort: 9090
+    name: https
+  type: ClusterIP

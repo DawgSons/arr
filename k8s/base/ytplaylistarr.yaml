@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ytplaylistarr
+  namespace: media-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ytplaylistarr
+  template:
+    metadata:
+      labels:
+        app: ytplaylistarr
+    spec:
+      containers:
+      - name: ytplaylistarr
+        image: ytplaylistarr:latest
+        imagePullPolicy: Never  # Use local built image
+        env:
+        - name: SLEEP_AMOUNT
+          valueFrom:
+            configMapKeyRef:
+              name: ytplaylistarr-config
+              key: SLEEP_AMOUNT
+        - name: PUID
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: PUID
+        - name: PGID
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: PGID
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: TZ
+        volumeMounts:
+        - name: playlists
+          mountPath: /playlists.txt
+          subPath: playlists.txt
+        - name: downloads
+          mountPath: /downloads
+          subPath: musicvideos
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "25m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+      volumes:
+      - name: playlists
+        configMap:
+          name: ytplaylistarr-config
+      - name: downloads
+        persistentVolumeClaim:
+          claimName: media-storage-pvc
+      - name: localtime
+        hostPath:
+          path: /etc/localtime

@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  namespace: media-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      securityContext:
+        supplementalGroups: [107, 44]  # video and render groups for hardware acceleration
+      containers:
+      - name: jellyfin
+        image: ghcr.io/hotio/jellyfin:latest
+        ports:
+        - containerPort: 8096
+        env:
+        - name: PUID
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: PUID
+        - name: PGID
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: PGID
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: TZ
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          subPath: jellyfin/config
+        - name: cache
+          mountPath: /cache
+          subPath: jellyfin/cache
+        - name: media
+          mountPath: /data/usenet/media
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        - name: dri
+          mountPath: /dev/dri
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        securityContext:
+          privileged: true  # Required for hardware acceleration
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      - name: cache
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      - name: media
+        persistentVolumeClaim:
+          claimName: media-storage-pvc
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+      - name: dri
+        hostPath:
+          path: /dev/dri
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin
+  namespace: media-server
+spec:
+  selector:
+    app: jellyfin
+  ports:
+  - protocol: TCP
+    port: 8097
+    targetPort: 8096
+  type: ClusterIP
