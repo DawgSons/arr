@@ -22,10 +22,10 @@
 
 ## In Progress
 <!-- Tasks currently being worked on -->
-- Separate component resources into individual files (deployment.yaml, service.yaml, ingress.yaml) #kubernetes #organization
 
 ## Completed
 <!-- Finished tasks -->
+- Separate component resources into individual files (deployment.yaml, service.yaml, ingress.yaml) #kubernetes #organization
 - Add missing components (heimdall, jellyfin, prowlarr, sabnzbd) #kubernetes #infrastructure
 - Make domain names configurable in a clever way #kubernetes #configuration #enhancement
 - Add Kubernetes Kustomize deployment with proper folder structure #kubernetes #deployment #infrastructure
