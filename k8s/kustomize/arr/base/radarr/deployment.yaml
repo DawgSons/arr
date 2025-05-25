@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prowlarr
+  name: radarr
   namespace: media-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: prowlarr
+      app: radarr
   template:
     metadata:
       labels:
-        app: prowlarr
+        app: radarr
     spec:
       containers:
-      - name: prowlarr
-        image: ghcr.io/hotio/prowlarr:latest
+      - name: radarr
+        image: ghcr.io/hotio/radarr:latest
         ports:
-        - containerPort: 9696
+        - containerPort: 7878
         env:
         - name: PUID
           valueFrom:
@@ -42,19 +42,21 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
-          subPath: prowlarr
+          subPath: radarr
         - name: downloads
           mountPath: /data/usenet/downloads
+        - name: media
+          mountPath: /data/usenet/media
         - name: localtime
           mountPath: /etc/localtime
           readOnly: true
         resources:
           requests:
-            memory: "128Mi"
-            cpu: "50m"
-          limits:
             memory: "256Mi"
-            cpu: "200m"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
       volumes:
       - name: config
         persistentVolumeClaim:
@@ -62,45 +64,9 @@ spec:
       - name: downloads
         persistentVolumeClaim:
           claimName: usenet-downloads-pvc
+      - name: media
+        persistentVolumeClaim:
+          claimName: media-storage-pvc
       - name: localtime
         hostPath:
           path: /etc/localtime
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: prowlarr
-  namespace: media-server
-spec:
-  selector:
-    app: prowlarr
-  ports:
-  - protocol: TCP
-    port: 9696
-    targetPort: 9696
-  type: ClusterIP
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: prowlarr
-  namespace: media-server
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-spec:
-  tls:
-  - hosts:
-    - $(PROWLARR_HOST)
-    secretName: prowlarr-tls
-  rules:
-  - host: $(PROWLARR_HOST)
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: prowlarr
-            port:
-              number: 9696

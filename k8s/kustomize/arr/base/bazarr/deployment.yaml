@@ -1,24 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sabnzbd
+  name: bazarr
   namespace: media-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sabnzbd
+      app: bazarr
   template:
     metadata:
       labels:
-        app: sabnzbd
+        app: bazarr
     spec:
       containers:
-      - name: sabnzbd
-        image: ghcr.io/hotio/sabnzbd:latest
+      - name: bazarr
+        image: ghcr.io/hotio/bazarr:latest
         ports:
-        - containerPort: 8080
-        - containerPort: 9090
+        - containerPort: 6767
         env:
         - name: PUID
           valueFrom:
@@ -30,6 +29,11 @@ spec:
             configMapKeyRef:
               name: arr-stack-config
               key: PGID
+        - name: UMASK
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: UMASK
         - name: TZ
           valueFrom:
             configMapKeyRef:
@@ -38,7 +42,7 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
-          subPath: sabnzbd
+          subPath: bazarr
         - name: downloads
           mountPath: /data/usenet/downloads
         - name: media
@@ -48,11 +52,11 @@ spec:
           readOnly: true
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "200m"
+            memory: "128Mi"
+            cpu: "50m"
           limits:
-            memory: "3Gi"
-            cpu: "700m"
+            memory: "256Mi"
+            cpu: "200m"
       volumes:
       - name: config
         persistentVolumeClaim:
@@ -66,48 +70,3 @@ spec:
       - name: localtime
         hostPath:
           path: /etc/localtime
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: sabnzbd
-  namespace: media-server
-spec:
-  selector:
-    app: sabnzbd
-  ports:
-  - name: http
-    protocol: TCP
-    port: 8080
-    targetPort: 8080
-  - name: https
-    protocol: TCP
-    port: 9090
-    targetPort: 9090
-  type: ClusterIP
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: sabnzbd
-  namespace: media-server
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
-spec:
-  tls:
-  - hosts:
-    - $(SABNZBD_HOST)
-    secretName: sabnzbd-tls
-  rules:
-  - host: $(SABNZBD_HOST)
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: sabnzbd
-            port:
-              number: 8080

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: heimdall
+  namespace: media-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: heimdall
+  template:
+    metadata:
+      labels:
+        app: heimdall
+    spec:
+      containers:
+      - name: heimdall
+        image: lscr.io/linuxserver/heimdall:latest
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        env:
+        - name: PUID
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: PUID
+        - name: PGID
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: PGID
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              name: arr-stack-config
+              key: TZ
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          subPath: heimdall
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      - name: localtime
+        hostPath:
+          path: /etc/localtime

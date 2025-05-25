@@ -8,12 +8,12 @@
 
 ### High Priority
 <!-- Critical bugs and important features -->
+- does it make sense to make the namespace also configurable?
 
 ### Medium Priority
 <!-- Enhancements and improvements -->
 - Add dark mode to the dashboard #feature #ui #enhancement
 - Improve loading performance on product page #performance #optimization
-- Separate component resources into individual files (deployment.yaml, service.yaml, ingress.yaml) #kubernetes #organization
 
 ### Low Priority
 <!-- Nice-to-haves and maintenance tasks -->
@@ -22,6 +22,7 @@
 
 ## In Progress
 <!-- Tasks currently being worked on -->
+- Separate component resources into individual files (deployment.yaml, service.yaml, ingress.yaml) #kubernetes #organization
 
 ## Completed
 <!-- Finished tasks -->
