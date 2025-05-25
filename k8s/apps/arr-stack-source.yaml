@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: arr-stack
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://github.com/pipelinedave/arr.git
+  ref:
+    branch: main

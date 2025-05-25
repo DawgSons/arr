@@ -1,0 +1,26 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: arr-stack
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./k8s/kustomize/arr/overlays/prod
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: arr-stack
+  validation: client
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: radarr
+      namespace: media-server
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: sonarr
+      namespace: media-server
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: bazarr
+      namespace: media-server

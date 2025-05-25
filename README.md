@@ -1,41 +1,100 @@
-﻿# Copilot Todo System Template
+﻿# ARR Media Server Stack
 
-A smart task management system that works seamlessly with GitHub Copilot to help organize and prioritize your project tasks.
+A collection of media server applications (Radarr, Sonarr, etc.) deployable via Docker Compose or Kubernetes.
 
-## Features
+## Components
 
-- 📥 **Smart Inbox**: Quickly add new tasks without worrying about organization
-- 🤖 **AI-Powered Organization**: Copilot automatically processes and prioritizes tasks
-- 🏷️ **Intelligent Tagging**: Tasks are automatically tagged based on their nature (#bug, #feature, etc.)
-- 📊 **Priority Management**: Tasks are organized into High, Medium, and Low priority sections
-- 🔄 **Flexible Workflow**: Maintain visibility of in-progress and completed tasks
+- 🎬 **Radarr**: Movie management
+- 📺 **Sonarr**: TV show management
+- 🔤 **Bazarr**: Subtitle management
+- 📥 **SABnzbd**: Usenet downloader
+- 🔍 **Prowlarr**: Indexer manager
+- 🎵 **YTPlaylistarr**: YouTube playlist downloader
+- 🖥️ **Jellyfin**: Media server
+- � **Heimdall**: Application dashboard
 
-## Getting Started
+## Deployment Options
 
-1. Copy this template to your repository
-2. Place the files in the `.github/copilot` directory
-3. Start adding tasks to the Inbox section in `Todo.md`
+### Docker Compose
+
+For simple deployments, use Docker Compose:
+
+```bash
+cd docker
+docker-compose up -d
+```
+
+### Kubernetes
+
+For Kubernetes deployments using kustomize:
+
+1. Development environment:
+```bash
+kubectl apply -k k8s/kustomize/arr/overlays/dev
+```
+
+2. Production environment:
+```bash
+kubectl apply -k k8s/kustomize/arr/overlays/prod
+```
+
+3. Using Flux CD (GitOps):
+```bash
+kubectl apply -f k8s/apps/arr-stack-source.yaml
+kubectl apply -f k8s/apps/arr-stack.yaml
+```
 
 ## File Structure
 
-- `Todo.md` - The main task list file where you add and track tasks
-- `CopilotTodo.md` - Configuration for how Copilot should process tasks
-- `Notify.md` - Global instructions for Copilot's todo management
+```
+/docker               # Docker Compose deployment
+  docker-compose.yml  # Main Docker Compose configuration
+  ytplaylistarr/      # Custom YouTube playlist downloader
 
-## Usage
+/k8s                  # Kubernetes deployment
+  /apps               # Flux CD application definitions
+  /kustomize          # Kustomize manifests
+    /arr              # Main application stack
+      /base           # Base manifests
+        /common       # Shared resources (namespace, configmap, volumes)
+        /radarr       # Radarr manifests
+        /sonarr       # Sonarr manifests
+        /bazarr       # Bazarr manifests
+        # ...other services
+      /overlays       # Environment-specific overlays
+        /dev          # Development environment
+        /prod         # Production environment
 
-Simply mention "todo" or "todos" in your conversations with GitHub Copilot, and it will:
-- Process any new items in your inbox
-- Organize tasks by priority
-- Maintain the structure of your todo list
-- Help you focus on the most important tasks
+/.github              # GitHub related files
+  /Todo.md            # Project task list
+  /CopilotTodo.md     # Copilot task management config
+```
 
-## Best Practices
+## Configuration
 
-1. Add new tasks freely to the Inbox section
-2. Let Copilot handle the organization and prioritization
-3. Manually override priorities when needed by moving tasks
-4. Mark tasks as completed by moving them to the Completed section
+### Docker Compose
+
+Edit the `docker-compose.yml` file to adjust:
+- Volume mounts
+- Environment variables
+- Port mappings
+
+### Kubernetes
+
+1. Common config: `k8s/kustomize/arr/base/common/configmap.yaml`
+2. Environment-specific configurations in the overlay directories
+
+## Requirements
+
+### Docker Compose
+- Docker
+- Docker Compose
+
+### Kubernetes
+- Kubernetes cluster (k3s, k8s, etc)
+- kubectl
+- kustomize
+- Optional: Flux CD for GitOps
 
 ## License
 

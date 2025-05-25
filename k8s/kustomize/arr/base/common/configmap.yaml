@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: arr-stack-config
+  namespace: media-server
+data:
+  PUID: "1000"
+  PGID: "1000"
+  UMASK: "002"
+  TZ: "Europe/Amsterdam"
