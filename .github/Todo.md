@@ -8,7 +8,6 @@
 
 ### High Priority
 <!-- Critical bugs and important features -->
-- run a markdown lint over all our markdown files
 
 ### Medium Priority
 <!-- Enhancements and improvements -->
