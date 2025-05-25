@@ -96,10 +96,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - sonarr.example.com
+    - $(SONARR_HOST)
     secretName: sonarr-tls
   rules:
-  - host: sonarr.example.com
+  - host: $(SONARR_HOST)
     http:
       paths:
       - path: /

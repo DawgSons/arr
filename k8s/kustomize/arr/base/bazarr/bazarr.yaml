@@ -96,10 +96,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - bazarr.example.com
+    - $(BAZARR_HOST)
     secretName: bazarr-tls
   rules:
-  - host: bazarr.example.com
+  - host: $(BAZARR_HOST)
     http:
       paths:
       - path: /

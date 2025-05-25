@@ -5,3 +5,22 @@ resources:
   - namespace.yaml
   - configmap.yaml
   - persistent-volumes.yaml
+
+configMapGenerator:
+- name: domain-config
+  literals:
+  - BASE_DOMAIN=example.com
+  - RADARR_SUBDOMAIN=radarr
+  - SONARR_SUBDOMAIN=sonarr
+  - BAZARR_SUBDOMAIN=bazarr
+  - PROWLARR_SUBDOMAIN=prowlarr
+  - SABNZBD_SUBDOMAIN=sabnzbd
+  - JELLYFIN_SUBDOMAIN=jellyfin
+  - HEIMDALL_SUBDOMAIN=heimdall
+  - RADARR_FQDN=radarr.example.com
+  - SONARR_FQDN=sonarr.example.com
+  - BAZARR_FQDN=bazarr.example.com
+  - PROWLARR_FQDN=prowlarr.example.com
+  - SABNZBD_FQDN=sabnzbd.example.com
+  - JELLYFIN_FQDN=jellyfin.example.com
+  - HEIMDALL_FQDN=heimdall.example.com

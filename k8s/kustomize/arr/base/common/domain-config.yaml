@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: domain-config
+  namespace: media-server
+data:
+  # Base domain configuration
+  BASE_DOMAIN: "example.com"
+  # Subdomain prefix for services (optional)
+  SUBDOMAIN_PREFIX: "media"
+  # Individual service configuration (if empty, will use service name)
+  RADARR_SUBDOMAIN: "radarr"
+  SONARR_SUBDOMAIN: "sonarr"
+  BAZARR_SUBDOMAIN: "bazarr"
+  PROWLARR_SUBDOMAIN: "prowlarr"
+  JELLYFIN_SUBDOMAIN: "jellyfin"
+  HEIMDALL_SUBDOMAIN: "dashboard"
+  YTPLAYLISTARR_SUBDOMAIN: "ytplaylist"
+  # Domain pattern: either "service.domain.com" or "prefix-service.domain.com"
+  DOMAIN_PATTERN: "service.domain.com"

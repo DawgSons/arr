@@ -7,8 +7,20 @@ resources:
   - ../../base
 
 patches:
-  - path: patch-ingress.yaml
   - path: patch-resources.yaml
+
+configMapGenerator:
+- name: domain-config
+  behavior: merge
+  literals:
+  - BASE_DOMAIN=pipelinedave.com
+  - RADARR_FQDN=radarr.pipelinedave.com
+  - SONARR_FQDN=sonarr.pipelinedave.com
+  - BAZARR_FQDN=bazarr.pipelinedave.com
+  - PROWLARR_FQDN=prowlarr.pipelinedave.com
+  - SABNZBD_FQDN=sabnzbd.pipelinedave.com
+  - JELLYFIN_FQDN=jellyfin.pipelinedave.com
+  - HEIMDALL_FQDN=heimdall.pipelinedave.com
 
 commonLabels:
   environment: production

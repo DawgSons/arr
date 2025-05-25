@@ -8,13 +8,64 @@ resources:
   - radarr
   - sonarr
   - bazarr
+  - sabnzbd
+  - prowlarr
+  - jellyfin
+  - heimdall
   # Uncomment as needed:
-  # - sabnzbd
-  # - prowlarr
-  # - jellyfin
-  # - heimdall
   # - ytplaylistarr
 
 commonLabels:
   app.kubernetes.io/part-of: arr-stack
   app.kubernetes.io/managed-by: kustomize
+
+vars:
+  - name: RADARR_HOST
+    objref:
+      kind: ConfigMap
+      name: domain-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.RADARR_FQDN
+  - name: SONARR_HOST
+    objref:
+      kind: ConfigMap
+      name: domain-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.SONARR_FQDN
+  - name: BAZARR_HOST
+    objref:
+      kind: ConfigMap
+      name: domain-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.BAZARR_FQDN
+  - name: PROWLARR_HOST
+    objref:
+      kind: ConfigMap
+      name: domain-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.PROWLARR_FQDN
+  - name: SABNZBD_HOST
+    objref:
+      kind: ConfigMap
+      name: domain-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.SABNZBD_FQDN
+  - name: JELLYFIN_HOST
+    objref:
+      kind: ConfigMap
+      name: domain-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.JELLYFIN_FQDN
+  - name: HEIMDALL_HOST
+    objref:
+      kind: ConfigMap
+      name: domain-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.HEIMDALL_FQDN

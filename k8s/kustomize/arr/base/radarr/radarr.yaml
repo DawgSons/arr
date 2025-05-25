@@ -96,10 +96,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - radarr.example.com
+    - $(RADARR_HOST)
     secretName: radarr-tls
   rules:
-  - host: radarr.example.com
+  - host: $(RADARR_HOST)
     http:
       paths:
       - path: /

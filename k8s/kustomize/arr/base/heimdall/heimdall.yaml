@@ -1,23 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: radarr
+  name: heimdall
   namespace: media-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: radarr
+      app: heimdall
   template:
     metadata:
       labels:
-        app: radarr
+        app: heimdall
     spec:
       containers:
-      - name: radarr
-        image: ghcr.io/hotio/radarr:latest
+      - name: heimdall
+        image: lscr.io/linuxserver/heimdall:latest
         ports:
-        - containerPort: 7878
+        - containerPort: 80
+        - containerPort: 443
         env:
         - name: PUID
           valueFrom:
@@ -29,11 +30,6 @@ spec:
             configMapKeyRef:
               name: arr-stack-config
               key: PGID
-        - name: UMASK
-          valueFrom:
-            configMapKeyRef:
-              name: arr-stack-config
-              key: UMASK
         - name: TZ
           valueFrom:
             configMapKeyRef:
@@ -42,31 +38,21 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
-          subPath: radarr
-        - name: downloads
-          mountPath: /data/usenet/downloads
-        - name: media
-          mountPath: /data/usenet/media
+          subPath: heimdall
         - name: localtime
           mountPath: /etc/localtime
           readOnly: true
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "100m"
+            memory: "128Mi"
+            cpu: "50m"
           limits:
-            memory: "512Mi"
-            cpu: "500m"
+            memory: "256Mi"
+            cpu: "200m"
       volumes:
       - name: config
         persistentVolumeClaim:
           claimName: appdata-pvc
-      - name: downloads
-        persistentVolumeClaim:
-          claimName: usenet-downloads-pvc
-      - name: media
-        persistentVolumeClaim:
-          claimName: media-storage-pvc
       - name: localtime
         hostPath:
           path: /etc/localtime
@@ -74,13 +60,43 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: radarr
+  name: heimdall
   namespace: media-server
 spec:
   selector:
-    app: radarr
+    app: heimdall
   ports:
-  - protocol: TCP
-    port: 7878
-    targetPort: 7878
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  - name: https
+    protocol: TCP
+    port: 443
+    targetPort: 443
   type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: heimdall
+  namespace: media-server
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - $(HEIMDALL_HOST)
+    secretName: heimdall-tls
+  rules:
+  - host: $(HEIMDALL_HOST)
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: heimdall
+            port:
+              number: 80

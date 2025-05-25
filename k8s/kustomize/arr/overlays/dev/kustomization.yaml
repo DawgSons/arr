@@ -6,8 +6,18 @@ namespace: media-server
 resources:
   - ../../base
 
-patches:
-  - path: patch-ingress.yaml
+configMapGenerator:
+- name: domain-config
+  behavior: merge
+  literals:
+  - BASE_DOMAIN=dev.example.com
+  - RADARR_FQDN=radarr.dev.example.com
+  - SONARR_FQDN=sonarr.dev.example.com
+  - BAZARR_FQDN=bazarr.dev.example.com
+  - PROWLARR_FQDN=prowlarr.dev.example.com
+  - SABNZBD_FQDN=sabnzbd.dev.example.com
+  - JELLYFIN_FQDN=jellyfin.dev.example.com
+  - HEIMDALL_FQDN=heimdall.dev.example.com
 
 commonLabels:
   environment: development

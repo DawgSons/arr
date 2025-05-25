@@ -8,8 +8,6 @@
 
 ### High Priority
 <!-- Critical bugs and important features -->
-- add the missing components: heimdall, jellyfin, prowlarr, sabnzbd
-- Make domain names configurable in a clever way #kubernetes #configuration #enhancement
 
 ### Medium Priority
 <!-- Enhancements and improvements -->
@@ -27,6 +25,8 @@
 
 ## Completed
 <!-- Finished tasks -->
+- Add missing components (heimdall, jellyfin, prowlarr, sabnzbd) #kubernetes #infrastructure
+- Make domain names configurable in a clever way #kubernetes #configuration #enhancement
 - Add Kubernetes Kustomize deployment with proper folder structure #kubernetes #deployment #infrastructure
 - Add README.md to the Kubernetes folder with deployment instructions #documentation #kubernetes
 - Add README.md to the Docker folder with deployment instructions #documentation #docker
