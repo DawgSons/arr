@@ -8,23 +8,20 @@
 
 ### High Priority
 <!-- Critical bugs and important features -->
-- does it make sense to make the namespace also configurable?
+- run a markdown lint over all our markdown files
 
 ### Medium Priority
 <!-- Enhancements and improvements -->
-- Add dark mode to the dashboard #feature #ui #enhancement
-- Improve loading performance on product page #performance #optimization
 
 ### Low Priority
 <!-- Nice-to-haves and maintenance tasks -->
-- Fix login bug when user uses special characters #bug #authentication
-
 
 ## In Progress
 <!-- Tasks currently being worked on -->
 
 ## Completed
 <!-- Finished tasks -->
+- Make namespace configurable in Kustomize overlays #kubernetes #configuration #enhancement
 - Separate component resources into individual files (deployment.yaml, service.yaml, ingress.yaml) #kubernetes #organization
 - Add missing components (heimdall, jellyfin, prowlarr, sabnzbd) #kubernetes #infrastructure
 - Make domain names configurable in a clever way #kubernetes #configuration #enhancement
