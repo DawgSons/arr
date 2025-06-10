@@ -5,6 +5,7 @@ resources:
   - namespace.yaml
   - configmap.yaml
   - persistent-volumes.yaml
+  - jellyfin-config-pvc.yaml
 
 configMapGenerator:
 - name: domain-config

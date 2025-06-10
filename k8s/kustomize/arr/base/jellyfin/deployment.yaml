@@ -37,7 +37,7 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
-          subPath: jellyfin/config
+          # No subPath needed as this volume is dedicated
         - name: cache
           mountPath: /cache
           subPath: jellyfin/cache
@@ -66,10 +66,10 @@ spec:
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: appdata-pvc
+          claimName: jellyfin-config-pvc # Use the new PVC
       - name: cache
         persistentVolumeClaim:
-          claimName: appdata-pvc
+          claimName: appdata-pvc # Keep appdata-pvc for cache
       - name: media
         persistentVolumeClaim:
           claimName: media-storage-pvc
