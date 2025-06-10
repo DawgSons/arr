@@ -13,6 +13,15 @@ spec:
       labels:
         app: jellyfin
     spec:
+      initContainers:
+      - name: set-config-ownership
+        image: busybox:latest
+        command: ["sh", "-c", "chown -R 1000:1000 /config"]
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        securityContext:
+          runAsUser: 0 # Run as root to be able to chown
       containers:
       - name: jellyfin
         image: ghcr.io/hotio/jellyfin:latest
